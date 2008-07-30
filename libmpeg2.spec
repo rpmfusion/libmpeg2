@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 30 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.5.1-2
+- rebuild for buildsys cflags issue
+
 * Fri Jul 18 2008 kwizart < kwizart at gmail.com > - 0.5.1-1
 - Update to 0.5.1
 
