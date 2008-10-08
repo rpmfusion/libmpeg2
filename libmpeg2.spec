@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -50,14 +50,22 @@ rm AUTHORS.tmp
 
 
 %build
-%configure --disable-static
+%configure --disable-static \
+%ifarch i386
+  --disable-accel-detect \
+%endif
 
 # mpeg2dec have rpath
 # remove rpath from libtool
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} \
+%ifarch i386
+  OPT_CFLAGS="-fPIC -DPIC" \
+%else
+  OPT_CFLAGS="" \
+%endif
 
 
 %install
@@ -98,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct  4 2008 kwizart < kwizart at gmail.com > - 0.5.1-3
+- Fix CFLAGS on x86 producing selinux denials.
+
 * Wed Jul 30 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.5.1-2
 - rebuild for buildsys cflags issue
 
