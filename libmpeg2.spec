@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -51,7 +51,7 @@ rm AUTHORS.tmp
 
 %build
 %configure --disable-static \
-%ifarch %{ix86}
+%ifarch %{ix86} ppc
   --disable-accel-detect \
 %endif
 
@@ -111,10 +111,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Mar 27 2009 kwizart < kwizart at gmail.com > - 0.5.1-4
+* Fri Mar 27 2009 kwizart < kwizart at gmail.com > - 0.5.1-5
 - Rebuild
 - Fix target_arch conditionals
 - Provides internal definitions mpeg2_internal.h
+- Disable ppc altivec optim (TODO improve asm optim later)
  
 * Fri Oct  4 2008 kwizart < kwizart at gmail.com > - 0.5.1-3
 - Fix CFLAGS on x86 producing selinux denials.
