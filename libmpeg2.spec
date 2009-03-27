@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -51,7 +51,7 @@ rm AUTHORS.tmp
 
 %build
 %configure --disable-static \
-%ifarch i386
+%ifarch %{ix86}
   --disable-accel-detect \
 %endif
 
@@ -61,7 +61,7 @@ sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' li
 sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 make %{?_smp_mflags} \
-%ifarch i386
+%ifarch %{ix86}
   OPT_CFLAGS="-fPIC -DPIC" \
 %else
   OPT_CFLAGS="" \
@@ -72,6 +72,11 @@ make %{?_smp_mflags} \
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+
+
+#Fix datatype internal definitions
+install -pm 0644 libmpeg2/mpeg2_internal.h \
+  $RPM_BUILD_ROOT%{_includedir}/mpeg2dec/
 
 
 
@@ -106,6 +111,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 27 2009 kwizart < kwizart at gmail.com > - 0.5.1-4
+- Rebuild
+- Fix target_arch conditionals
+- Provides internal definitions mpeg2_internal.h
+ 
 * Fri Oct  4 2008 kwizart < kwizart at gmail.com > - 0.5.1-3
 - Fix CFLAGS on x86 producing selinux denials.
 
