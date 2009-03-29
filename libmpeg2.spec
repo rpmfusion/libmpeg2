@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.5.1-6
+- rebuild for new F11 features
+
 * Fri Mar 27 2009 kwizart < kwizart at gmail.com > - 0.5.1-5
 - Rebuild
 - Fix target_arch conditionals
