@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        7%{?dist}
+Release:        7%{?dist}.1
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -49,7 +49,8 @@ cp -p -f AUTHORS.tmp AUTHORS
 rm AUTHORS.tmp
 
 #Disable ppc altivec case
-sed -i -e 's/ppc-/ppc64-/' configure.ac configure
+sed -i -e 's/ppc-/noppc64-/' configure.ac configure
+sed -i -e 's/powerpc-/nopowerpc64-/' configure.ac configure
 
 %build
 %configure --disable-static \
