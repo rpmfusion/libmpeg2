@@ -48,6 +48,8 @@ touch -r AUTHORS AUTHORS.tmp
 cp -p -f AUTHORS.tmp AUTHORS
 rm AUTHORS.tmp
 
+#Disable ppc altivec case
+sed -i -e 's/ppc-/ppc64-/' configure.ac configure
 
 %build
 %configure --disable-static \
@@ -111,6 +113,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr  8 2009 kwizart < kwizart at gmail.com > - 0.5.1-7
+- New attempt
+
 * Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.5.1-6
 - rebuild for new F11 features
 
