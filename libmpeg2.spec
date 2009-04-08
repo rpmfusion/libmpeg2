@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
