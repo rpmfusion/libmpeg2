@@ -1,6 +1,6 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        8%{?dist}.1
+Release:        9%{?dist}
 Summary:        MPEG-2 decoder libraries
 
 Group:          System Environment/Libraries
@@ -114,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Oct 08 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.5.1-8.1
+* Wed Jan 04 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.5.1-9
 - Rebuilt for target i686
 
 * Sat Oct 17 2009 kwizart < kwizart at gmail.com > - 0.5.1-8
