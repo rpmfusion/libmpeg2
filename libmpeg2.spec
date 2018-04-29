@@ -1,17 +1,20 @@
 Name:           libmpeg2
 Version:        0.5.1
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        MPEG-2 decoder libraries
 
-Group:          System Environment/Libraries
 License:        GPLv2+
-URL:            http://libmpeg2.sourceforge.net/
-Source0:        http://libmpeg2.sourceforge.net/files/libmpeg2-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+URL:            http://libmpeg2.sourceforge.net
+Source0:        %{url}/files/libmpeg2-%{version}.tar.gz
+# https://github.com/videolan/vlc/blob/master/contrib/src/libmpeg2/libmpeg2-inline.patch
+Patch0:         libmpeg2-inline.patch
 
 BuildRequires:  SDL-devel
 BuildRequires:  libXt-devel
 BuildRequires:  libXv-devel
+# bootstrap deps
+BuildRequires:  automake
+BuildRequires:  libtool
 
 
 %description
@@ -20,8 +23,7 @@ streams. It is released under the terms of the GPL license.
 
 %package -n     mpeg2dec
 Summary:        MPEG-2 decoder program
-Group:          Applications/Multimedia
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description -n mpeg2dec
 The %{name}-devel package contains libraries and header files for
@@ -29,12 +31,8 @@ developing applications that use %{name}.
 
 %package        devel
 Summary:        Development files for %{name}
-Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
-Requires:       pkgconfig
-# Introducted in F-10 Can be dropped in F-12
-Provides:       mpeg2dec-devel = %{version}-%{release}
-Obsoletes:      mpeg2dec-devel < %{version}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -43,6 +41,9 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
+%patch0 -p1
+autoreconf -fiv
+
 iconv -f ISO-8859-1 -t UTF-8 AUTHORS > AUTHORS.tmp
 touch -r AUTHORS AUTHORS.tmp 
 cp -p -f AUTHORS.tmp AUTHORS
@@ -63,7 +64,7 @@ sed -i -e 's/powerpc-/nopowerpc64-/' configure.ac configure
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-make %{?_smp_mflags} \
+%{make_build} \
 %ifarch %{ix86}
   OPT_CFLAGS="-fPIC -DPIC" \
 %else
@@ -72,40 +73,28 @@ make %{?_smp_mflags} \
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+%{make_install}
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 #Fix datatype internal definitions
 install -pm 0644 libmpeg2/mpeg2_internal.h \
-  $RPM_BUILD_ROOT%{_includedir}/mpeg2dec/
+  %{buildroot}%{_includedir}/mpeg2dec/
 
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
+%ldconfig_scriptlets
 
 %files
-%defattr(-,root,root,-)
-%doc AUTHORS ChangeLog COPYING NEWS README TODO
+%doc AUTHORS ChangeLog NEWS README TODO
+%license COPYING
 %{_libdir}/*.so.*
 
 %files -n mpeg2dec
-%defattr(-,root,root,-)
 %{_bindir}/corrupt_mpeg2
 %{_bindir}/extract_mpeg2
 %{_bindir}/mpeg2dec
 %{_mandir}/man1/*.1*
 
 %files devel
-%defattr(-,root,root,-)
 %doc CodingStyle doc/libmpeg2.txt doc/sample*.c
 %{_includedir}/mpeg2dec/
 %{_libdir}/*.so
@@ -114,6 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 29 2018 Leigh Scott <leigh123linux@googlemail.com> - 0.5.1-15
+- Add patch to fix inline warnings
+- Spec file clean up
+
 * Thu Mar 01 2018 RPM Fusion Release Engineering <leigh123linux@googlemail.com> - 0.5.1-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
@@ -147,7 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 - Provides internal definitions mpeg2_internal.h
 - Disable ppc altivec optim (TODO improve asm optim later)
  
-* Fri Oct  4 2008 kwizart < kwizart at gmail.com > - 0.5.1-3
+* Sat Oct  4 2008 kwizart < kwizart at gmail.com > - 0.5.1-3
 - Fix CFLAGS on x86 producing selinux denials.
 
 * Wed Jul 30 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.5.1-2
