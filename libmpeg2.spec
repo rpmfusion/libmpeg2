@@ -7,7 +7,7 @@ License:        GPLv2+
 URL:            http://libmpeg2.sourceforge.net
 Source0:        %{url}/files/libmpeg2-%{version}.tar.gz
 
-
+BuildRequires:  gcc
 BuildRequires:  SDL-devel
 BuildRequires:  libXt-devel
 BuildRequires:  libXv-devel
