@@ -6,15 +6,14 @@ Summary:        MPEG-2 decoder libraries
 License:        GPLv2+
 URL:            http://libmpeg2.sourceforge.net
 Source0:        %{url}/files/libmpeg2-%{version}.tar.gz
-# https://github.com/videolan/vlc/blob/master/contrib/src/libmpeg2/libmpeg2-inline.patch
-Patch0:         libmpeg2-inline.patch
+
 
 BuildRequires:  SDL-devel
 BuildRequires:  libXt-devel
 BuildRequires:  libXv-devel
 # bootstrap deps
-BuildRequires:  automake
-BuildRequires:  libtool
+#BuildRequires:  automake
+#BuildRequires:  libtool
 
 
 %description
@@ -41,17 +40,14 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch0 -p1
-autoreconf -fiv
+#patch0 -p1
+#autoreconf -fiv
 
 iconv -f ISO-8859-1 -t UTF-8 AUTHORS > AUTHORS.tmp
 touch -r AUTHORS AUTHORS.tmp 
 cp -p -f AUTHORS.tmp AUTHORS
 rm AUTHORS.tmp
 
-#Disable ppc altivec case
-sed -i -e 's/ppc-/noppc64-/' configure.ac configure
-sed -i -e 's/powerpc-/nopowerpc64-/' configure.ac configure
 
 %build
 %configure --disable-static \
